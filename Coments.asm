@@ -1,44 +1,65 @@
 ORG 100h
 
-SECTION .text
-main:
-    CALL iniciarModoVideo
-    ; Inicializamos la posición base del triángulo
-    MOV DX, 100       ; Y inicial (fila)
-    MOV CX, 100       ; X inicial (columna)
 
-    MOV SI, 1         ; Ancho de la línea (base creciente)
+SECTION .text
+   XOR AX,AX
+   XOR BX,BX
+   XOR CX,CX
+   XOR DX,DX
+
+
+   ; Posición inicial
+   MOV DX, 90d    ; Columnas
+   MOV CX, 90d     ; Filas
+   MOV BP, 90d     ; Contador de filas
+
+
+main:
+   CALL iniciarModoVideo
+   CALL dibujarTriangulo
+  
+   INT 20h   
+
+
+
+
+
 
 dibujarTriangulo:
-    MOV DI, 0         ; Contador de píxeles por línea
+   ; Dibujar Columnas
+   CALL encenderPixel
+   INC DX
+   CMP DX, 190d
+   JNE dibujarTriangulo
 
-dibujarLinea:
-    CALL encenderPixel
-    INC CX            ; Incrementar columna
-    INC DI            ; Incrementar píxel en la línea
-    CMP DI, SI        ; Comparar píxeles dibujados con el ancho de la línea
-    JL dibujarLinea   ; Dibujar más píxeles si no se ha alcanzado el ancho
 
-    ; Preparar la siguiente línea
-    INC DX            ; Bajar una fila
-    INC SI            ; Aumentar el ancho de la base
-    CMP DX, 250       ; Altura del triángulo (de 100 a 250)
-    JL dibujarTriangulo
+   ; Dibujar en filas 
+   INC CX ; Incrementamos fila
+   INC BP ; Incrementamos contador para luego colocar de manera dinamica a columnas
+   MOV DX,BP ; Ajustamos columna al valor actual de fila para colorear bien
+   CMP CX, 190d
+   JNE dibujarTriangulo
+   RET
 
-    INT 20h           ; Terminar el programa
+
+
 
 iniciarModoVideo:
-    MOV AH, 00h       ; Función para cambiar modo de video
-    MOV AL, 12h       ; Modo gráfico 640x480 con 16 colores
-    INT 10h           ; Interrupción para cambiar modo de video
-    RET
+   MOV AH, 0h
+   MOV AL, 12h     ; 640x480, 16 colores
+   INT 10h
+   RET
+
 
 encenderPixel:
-    MOV AH, 0Ch       ; Función para encender un píxel
-    MOV AL, 04h       ; Color rojo (04h)
-    MOV BH, 00h       ; Página de video (normalmente 0)
-    INT 10h           ; Interrupción para dibujar el píxel
-    RET
+   MOV AH, 0Ch           ; Función del BIOS para poner un píxel
+   MOV AL, 01h           ; Color del píxel (rojo)
+   MOV BH, 0             ; Página de video 0
+   INT 10h               ; Enciende el píxel
+   RET
+
+
+
 
 ; Colores en modo gráfico (16 colores):
 ; 00h - Negro
@@ -57,6 +78,7 @@ encenderPixel:
 ; 0Dh - Magenta claro
 ; 0Eh - Amarillo
 ; 0Fh - Blanco
+
 
 ; Explicación de registros en modo gráfico:
 ; AH: Código de función para la interrupción (define la acción, como cambiar modo o dibujar píxel)
