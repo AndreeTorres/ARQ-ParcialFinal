@@ -35,7 +35,6 @@ dibujarTrianguloLado:
 
 
 
-
 iniciarModoVideo:
     MOV AH, 00h
     MOV AL, 12h ; 640x480, 16 colores

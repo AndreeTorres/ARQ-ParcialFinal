@@ -1,26 +1,27 @@
 org 100h
 section .text
-    call modoVideo
-    mov dx, 240d ;fila
-    mov cx, 200d ;colunma
+    CALL modoVideo
+    MOV DX, 240d ;fila
+    MOV CX, 200d ;colunma
+
     rutina:
-        call printPixel
-        inc dx
-        cmp cx, 330d
-        je fin
-        jl rutina
+        CALL printPixel
+        inc DX
+        cmp CX, 330d
+        JE fin
+        JL rutina
     fin:
-        int 20h
+        INT 20h
 
     modoVideo:
-        mov ah, 00h
-        mov al, 12h      ; Modo de texto 80x25
-        int 10h          ; Llama a la BIOS para cambiar el modo de video
-        ret
+        MOV AH, 00h
+        MOV AL, 12h      ; Modo de texto 80x25
+        INT 10h          ; Llama a la BIOS para cambiar el modo de video
+        RET
     printPixel:
-        mov ah, 0ch
-        mov al, 07h
-        mov bh, 00h
+        MOV AH, 0ch
+        MOV AL, 07h
+        MOV BH, 00h
 
-        int 10h          ; Llama a la BIOS para dibujar un pixel en la
-        ret
+        INT 10h          ; Llama a la BIOS para dibujar un pixel en la
+        RET

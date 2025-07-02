@@ -21,10 +21,6 @@ main:
    INT 20h   
 
 
-
-
-
-
 dibujarTriangulo:
    ; Dibujar Columnas
    CALL encenderPixel
